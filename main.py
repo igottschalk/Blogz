@@ -19,7 +19,7 @@ class Blog(db.Model):
         self.blog_entry = blog_entry
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/blog', methods=['POST', 'GET'])
 def index():
 
     if request.method == 'POST':
@@ -34,6 +34,16 @@ def index():
     blogs = Blog.query.all()
     entrys = Blog.query.all()
     return render_template('todos.html',title="Build a Blog", blogs=blogs, entrys=entrys)
+
+@app.route('/newpost', methods=['POST'])
+def add_post():
+
+    blog_id = int(request.form['blog-id'])
+    blog = Blog.query.get(blog_id)
+    db.session.commit()
+
+    return redirect('/blog')
+
 
 
 if __name__ == '__main__':
