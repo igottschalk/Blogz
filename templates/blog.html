@@ -9,7 +9,7 @@
 
         <ul>
             {% for blog in blogs %}
-            <h3><a href="">{{blog.blog_title}}</a></h3>
+            <h3><a href="/blog?id={{blog.id}}">{{blog.blog_title}}</a></h3>
                 <form method="POST" action="/newpost">
                     <input type="hidden" name="blog-id" value="{{blog.id}}" />
                 </form>
