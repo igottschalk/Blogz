@@ -19,6 +19,24 @@ class Blog(db.Model):
         self.blog_entry = blog_entry
 
 
+@app.route('/newpost', methods=['POST', 'GET'])
+def newpost():
+
+    if request.method == 'POST':
+        blog_add = request.form['blog_title']
+        new_entry = request.form['blog_entry'] 
+
+        new_blog = Blog(blog_add, new_entry)
+
+        db.session.add(new_blog, new_entry)
+        db.session.commit()
+
+    blogs = Blog.query.all()
+    entrys = Blog.query.all() 
+
+    return render_template('newpost.html')
+
+
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
 
@@ -32,19 +50,17 @@ def index():
         db.session.commit()
 
     blogs = Blog.query.all()
-    entrys = Blog.query.all()
-    return render_template('todos.html',title="Build a Blog", blogs=blogs, entrys=entrys)
+    entrys = Blog.query.all() 
 
-@app.route('/newpost', methods=['POST'])
-def add_post():
+    return render_template('blog.html', blogs=blogs, entrys=entrys)
+
+@app.route('/blog', methods=['POST'])
+def display_blog():
 
     blog_id = int(request.form['blog-id'])
     blog = Blog.query.get(blog_id)
-    db.session.commit()
 
-    return redirect('/blog')
-
-
+    return render_template('blog.html', blog=blog)
 
 if __name__ == '__main__':
     app.run()
