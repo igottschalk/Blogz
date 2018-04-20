@@ -31,23 +31,24 @@ def newpost():
         blog_add = request.form['blog_title']
         new_entry = request.form['blog_entry'] 
 
+        new_blog = Blog(blog_add, new_entry)
+
+        db.session.add(new_blog, new_entry)
+        db.session.commit()
+
         if len(title) == 0:
-            title_error = "Please fill in title"
+            title_error = "Please fill in the title"
 
         if len(entry) == 0:
-            entry_error = "Please fill in body"
+            entry_error = "Please fill in the body"
 
-        if len(title_error) == 0 and len(entry_error) == 0:
-            new_blog = Blog(blog_add, new_entry)
-            db.session.add(new_blog, new_entry)
-            db.session.commit()
+        if len(title_error) > 0 and len(entry_error) > 0:
             return render_template('newpost.html', title_error=title_error, entry_error=entry_error)
 
     blogs = Blog.query.all()
     entrys = Blog.query.all() 
 
     return render_template('newpost.html', blogs=blogs, entrys=entrys)
-
 
 @app.route("/blog", methods=['GET'])
 def index():
@@ -62,13 +63,6 @@ def index():
 
     return render_template('blog.html', blogs=Blog.query.all())
 
-@app.route('/blog', methods=['POST'])
-def display_blog():
-
-    blog_id = int(request.form['blog-id'])
-    blog = Blog.query.get(blog_id)
-
-    return render_template('blog_post.html', blog=blog)
 
 if __name__ == '__main__':
     app.run()
