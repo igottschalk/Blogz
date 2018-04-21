@@ -22,33 +22,35 @@ class Blog(db.Model):
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
 
-    title_error = ""
-    entry_error = ""
-    title = ""
-    entry = ""
 
     if request.method == 'POST':
         blog_add = request.form['blog_title']
         new_entry = request.form['blog_entry'] 
 
+        title_error = ""
+        entry_error = ""
+
+        if len(blog_add) == 0:
+            title_error = "Please fill in the title"
+
+        if len(new_entry) == 0:
+            entry_error = "Please fill in the body"
+
+        if len(title_error) > 0 or len(entry_error) > 0:
+            return render_template('newpost.html', title_error=title_error, entry_error=entry_error, blog_add=blog_add, new_entry=new_entry)
+
         new_blog = Blog(blog_add, new_entry)
 
         db.session.add(new_blog, new_entry)
         db.session.commit()
+      
 
-        if len(title) == 0:
-            title_error = "Please fill in the title"
+        blogs = Blog.query.all()
+        blog =  blogs[len(blogs)-1]
 
-        if len(entry) == 0:
-            entry_error = "Please fill in the body"
+        return render_template('blog_post.html', blog=blog) 
 
-        if len(title_error) > 0 and len(entry_error) > 0:
-            return render_template('newpost.html', title_error=title_error, entry_error=entry_error)
-
-    blogs = Blog.query.all()
-    entrys = Blog.query.all() 
-
-    return render_template('newpost.html', blogs=blogs, entrys=entrys)
+    return render_template('newpost.html') 
 
 @app.route("/blog", methods=['GET'])
 def index():
@@ -62,6 +64,7 @@ def index():
        return  render_template('blog_post.html', blog=blog_post)
 
     return render_template('blog.html', blogs=Blog.query.all())
+
 
 
 if __name__ == '__main__':
