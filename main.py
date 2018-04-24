@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:teddy@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:teddy@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 
@@ -13,11 +13,39 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     blog_title = db.Column(db.String(120))
     blog_entry = db.Column(db.String(120))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, blog_title, blog_entry):
-        self.blog_title = blog_title
+    def __init__(self, blog_title, blog_entry, owner):
+        self.blog_title = blog_title, owner
         self.blog_entry = blog_entry
+        self.owner = owner
 
+class User(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(120))
+    blogs = db.relationship('Blog', backref='owner')
+
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()   
+        if user and user.password == password:
+            session['username'] = username
+            return redirect('/')
+        else:
+            return '<h1>Error!</h1>'      
+
+    return render_template('login.html')
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
@@ -37,9 +65,13 @@ def newpost():
             entry_error = "Please fill in the body"
 
         if len(title_error) > 0 or len(entry_error) > 0:
-            return render_template('newpost.html', title_error=title_error, entry_error=entry_error, blog_add=blog_add, new_entry=new_entry)
+            return render_template('newpost.html', 
+                title_error=title_error, 
+                entry_error=entry_error, 
+                blog_add=blog_add, 
+                new_entry=new_entry)
 
-        new_blog = Blog(blog_add, new_entry)
+        new_blog = Blog(blog_add, new_entry, owner)
 
         db.session.add(new_blog, new_entry)
         db.session.commit()

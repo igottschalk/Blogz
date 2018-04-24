@@ -1,20 +1,17 @@
 <!doctype html>
 <html>
-    <nav>
-        <a href='/blog'>Main Blog Page</a>
-        <a href='/newpost'>Add Blog Entry</a>
-    </nav>
     <head>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
-        <title>{{title}}</title>
-        <style>
-            .error {
-                color: red;
-            }
-        </style>
-        
+        <title>Blogz!</title>
     </head>
 <body>
+    <nav>
+        <a href="/">home</a>
+        <a href="/blog">all posts</a>
+        <a href="/blog/newpost">new post</a>
+        <a href="/login">login</a>
+        <a href="/logout">logout</a>
+    </nav>
+
 
     {% block content %}
     {% endblock %}
