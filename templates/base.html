@@ -2,17 +2,37 @@
 <html>
     <head>
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
-        <title>Blogz!</title>
+        <title>Blogz</title>
     </head>
-<body>
-    <nav>
-        <a href="/">home</a>
-        <a href="/blog">all posts</a>
-        <a href="/blog/newpost">new post</a>
-        <a href="/login">login</a>
-        <a href="/logout">logout</a>
-    </nav>
+    <body>
+        <nav>
+            <ul id="user-account">
+                <li><a href="/login">login</a></li>
+                <li><a href="/logout">logout</a></li>
+            </ul>
+            <ul>
+                <li><a href="/">home</a></li>
+                <li><a href="/blog">all posts</a></li>
+                <li><a href="/blog/newpost">new post</a></li>
+            </ul>
+        </nav>
+        
+<style>
+    .error {
+        color: red;
+    }
+    .success {
+        color: blue;
+    }
+</style>
 
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        <ul>
+        {% for category,message in messages %}
+            <p class="{{category}}">{{message}}</p>
+        {% endfor %}
+        </ul>
+    {% endwith %}   
 
     {% block content %}
     {% endblock %}
