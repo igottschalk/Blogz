@@ -181,9 +181,9 @@ def blog():
         return render_template("blog.html", blogs=blogs)
     elif request.args.get('id'):
         user_id = request.args.get('id')
-        blog = Blog.query.filter_by(id=user_id).first()
-        user = User.query.filter_by(id=user_id).first()
-        return render_template('blog.html', blog=blog, user=user)
+        blog = Blog.query.get(user_id)
+        #user = User.query.filter_by(id=user_id).first()
+        return render_template('blog_post.html', blog=blog)
     elif request.args.get('user'):
         user_id = request.args.get('user')
         user = User.query.filter_by(id=user_id).first()

@@ -7,25 +7,18 @@
                 <p>No blogs yet</p>
             {% else %}
 
-                <ul>
                     {% for blog in blogs %}
-                        <li><h3><a href="/blog?id={{ blog.id }}">{{ blog.blog_title }}</h3></a>
+                        <h3><a href="/blog?id={{ blog.id }}">{{ blog.blog_title }}</h3></a>
                             <ul>
-                                <li><h4>{{ blog.blog_entry }}</h4></li>
+                                <h4>{{ blog.blog_entry }}</h4>
                                 <!-- <p>written by <a href="/blog?id={{blog.id}}">{{blog.owner.username}}</a></p> -->
                                 <small>
                                   <div>Written by:
                                     <a href="/blog?user={{blog.owner.id}}">{{ blog.owner.username }}</a>
-                                    </small>
+                                </small>
                                   </div>
                             </ul>
-                        </li>
-                      <br>
-                      <hr/>
                     {% endfor %}
                 </ul>
             {% endif %}
-
-        </div>
-    </main>
 {% endblock %}
