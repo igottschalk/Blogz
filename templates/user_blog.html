@@ -3,18 +3,15 @@
 {% block content %}
     <h1>blog posts!</h1>
 
-    {% if blogs|length == 0 %}
-    <p>No blogs yet</p>
+    {% if user|length == 0 %}
+    <p>No users yet</p>
     {% else %}
 
         <ul>
             {% for blog in blogs %}
-            <h2><a href="/blog?id={{blog.user}}">{{blog.blog_title}}</a></h2>
-                <form method="GET" action="/blog">
-                    <input type="hidden" name="blog-id" value="{{blog.user}}" />
-                </form>
+            <h2><a href="/blog?id={{user.username}}">{{user.username}}</a></h2>
             <p>{{blog.blog_entry}}</p>
-            <p class="post-author">written by <a href="/blog?id{{blog.user}}">{{username}}</a></p>
+            <p>written by <a href="/blog?id={{blog.id}}">{{blog.owner.username}}}</a></p>
             {% endfor %}
         </ul>
 

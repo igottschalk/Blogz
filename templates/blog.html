@@ -1,22 +1,31 @@
-{% extends "base.html" %}
-
+{% extends "base.html" %} 
 {% block content %}
-    <h1>blog users!</h1>
+        <div>
+            <h1>Build a Blog</h1>
 
-    {% if blogs|length == 0 %}
-    <p>No blogs yet</p>
-    {% else %}
+            {% if blogs|length == 0 %}
+                <p>No blogs yet</p>
+            {% else %}
 
-        <ul>
-            {% for blog in blogs %}
-            <h3><a href="/blog?id={{blog.id}}">{{blog.blog_title}}</a></h3>
-                <form method="POST" action="/newpost">
-                    <input type="hidden" name="blog-id" value="{{blog.id}}" />
-                </form>
-            <p>{{blog.blog_entry}}</p>
-            <p class="post-author">written by <a href="/blog?id={{blog.id}}">{{blog.id}}</a></p>
-            {% endfor %}
-        </ul>
+                <ul>
+                    {% for blog in blogs %}
+                        <li><h3><a href="/blog?id={{ blog.id }}">{{ blog.blog_title }}</h3></a>
+                            <ul>
+                                <li><h4>{{ blog.blog_entry }}</h4></li>
+                                <!-- <p>written by <a href="/blog?id={{blog.id}}">{{blog.owner.username}}</a></p> -->
+                                <small>
+                                  <div>Written by:
+                                    <a href="/blog?user={{blog.owner.id}}">{{ blog.owner.username }}</a>
+                                    </small>
+                                  </div>
+                            </ul>
+                        </li>
+                      <br>
+                      <hr/>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-    {% endif %}
+        </div>
+    </main>
 {% endblock %}

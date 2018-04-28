@@ -88,7 +88,7 @@ def signup():
             verify = ""
 
         if username == existing_user:
-            #user_error = "Duplicate user"
+            user_error = "Duplicate user"
             flash('Duplicate user', 'error')
             username = ""
 
@@ -145,30 +145,50 @@ def newpost():
 
     return render_template('newpost.html') 
 
-
 @app.route('/logout')
 def logout():
     del session['username']
     return redirect('/blog')
+    #return redirect('/')
 
-@app.route('/blog', methods=['GET'])
-def blog():
 
-    request_id = request.args.get('id')
-    user_id = request.args.get('userId')
+# @app.route('/blog', methods=['GET'])
+# def blog():
+   
+#     request_id = request.args.get('id')
+#     user_id = request.args.get('user')
+
     
-    if request_id:
+#     if request_id:
        
-       blog_post = Blog.query.get(int(request_id))
-       return  render_template('blog.html', blog=blog_post)
+#        blog_post = Blog.query.filter_by(id=request_id).first()
+#        blog_user = User.query.filter_by(id=user_id).first()
+#        return render_template('blog.html', blog_post=blog_post, blog_user=blog_user)
 
-    if user_id:
-        
-        blog_user = User.query.get(int(user_id))
-        username = blog_user.username        
-        return  render_template('user_blog.html', user=username)
+#     elif user_id:
 
-    return render_template('blog.html', blogs=Blog.query.all())
+#        blog_user = User.query.filter_by(id=user_id).first()
+#        blog_post = Blog.query.filter_by(id=request_id).first()
+#        return render_template('blog.html', blog_post=blog_post, blog_user=blog_user)
+
+#     #this is default page with list of blogs using blog template
+#     return render_template('blog.html', blogs=Blog.query.all())
+
+@app.route("/blog", methods=['GET','POST'])
+def blog():
+    if not request.args:
+        blogs = Blog.query.all()
+        return render_template("blog.html", blogs=blogs)
+    elif request.args.get('id'):
+        user_id = request.args.get('id')
+        blog = Blog.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=user_id).first()
+        return render_template('blog.html', blog=blog, user=user)
+    elif request.args.get('user'):
+        user_id = request.args.get('user')
+        user = User.query.filter_by(id=user_id).first()
+        blogs = Blog.query.filter_by(owner_id=user_id).all()
+        return render_template('blog.html', blogs=blogs, user=user)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -178,10 +198,12 @@ def index():
         
     if request_id:
         
-        blog_user = User.query.get(int(request_id))        
-        return  render_template('index.html', user=blog_user)
-  
+        blog_post = Blog.query.get(request_id)       
+        return  render_template('index_post.html', blog_post=blog_post)
+
+    #this is default page with list of users using index template
     return render_template('index.html', users=User.query.all() )
+
 
 if __name__ == '__main__':
     app.run()
