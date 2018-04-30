@@ -87,11 +87,12 @@ def signup():
             #flash('Passwords do not match', 'error')
             verify = ""
 
-        if username == existing_user:
+        existing_user = User.query.filter_by(username=username).count()
+        if existing_user > 0:
             user_error = "Duplicate user"
-            flash('Duplicate user', 'error')
+            #flash('Duplicate user', 'error')
             username = ""
-
+       
         if not existing_user and not username_error and not password_error and not verify_error and not user_error:   
             new_user = User(username, password)
             db.session.add(new_user)
@@ -141,7 +142,7 @@ def newpost():
         blogs = Blog.query.all()
         blog =  blogs[len(blogs)-1]
 
-        return render_template('blog_post.html', blog=blog) 
+        return render_template('newpost.html', blog=blog) 
 
     return render_template('newpost.html') 
 
@@ -151,28 +152,6 @@ def logout():
     return redirect('/blog')
     #return redirect('/')
 
-
-# @app.route('/blog', methods=['GET'])
-# def blog():
-   
-#     request_id = request.args.get('id')
-#     user_id = request.args.get('user')
-
-    
-#     if request_id:
-       
-#        blog_post = Blog.query.filter_by(id=request_id).first()
-#        blog_user = User.query.filter_by(id=user_id).first()
-#        return render_template('blog.html', blog_post=blog_post, blog_user=blog_user)
-
-#     elif user_id:
-
-#        blog_user = User.query.filter_by(id=user_id).first()
-#        blog_post = Blog.query.filter_by(id=request_id).first()
-#        return render_template('blog.html', blog_post=blog_post, blog_user=blog_user)
-
-#     #this is default page with list of blogs using blog template
-#     return render_template('blog.html', blogs=Blog.query.all())
 
 @app.route("/blog", methods=['GET','POST'])
 def blog():
